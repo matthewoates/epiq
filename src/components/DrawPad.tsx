@@ -1,5 +1,6 @@
 import { RefObject, useEffect, useRef, useState } from "react";
 import Constants from "../Constants";
+import { createConnection } from "../routes/Draw";
 import DrawPadButtons from "./DrawPadButtons";
 
 const getContext = (cr: RefObject<HTMLCanvasElement>) => {
@@ -45,7 +46,28 @@ function getPos(e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
   }
 }
 
-function DrawPad() {
+function getImgData(cr: RefObject<HTMLCanvasElement>) {
+  const canvas = cr.current;
+
+  if (canvas) {
+    const imgData = canvas.toDataURL('image/png');
+
+    return imgData;
+  }
+
+  return '';
+}
+
+function sendImgData(ws: ReturnType<typeof createConnection>, cr: RefObject<HTMLCanvasElement>) {
+  const img = getImgData(cr);
+  ws.setImg.mutate({ img });
+}
+
+type DrawPadProps = {
+  ws: ReturnType<typeof createConnection>;
+};
+
+function DrawPad({ ws }: DrawPadProps) {
   const [onColor, setOnColor] = useState('green');
   const [offColor, setOffColor] = useState('black');
   const [eraseMode, setEraseMode] = useState(false);
@@ -67,6 +89,7 @@ function DrawPad() {
         height={Constants.imgSize.height}
         onMouseMove={e => {
           draw(canvasRef, onColor, offColor, eraseMode, getPos(e));
+          sendImgData(ws, canvasRef);
         }}
       />
       <DrawPadButtons
