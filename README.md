@@ -1,3 +1,12 @@
+# Queue
+
+- make sure multiple control screens work
+
+- css so pixels aren't blurred
+- WS rough edges:
+  - reconnecting (server goes out, restarts, phones kill connection, etc)
+  - failed to execute 'send' when in closed state
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
