@@ -1,6 +1,6 @@
 import { RefObject, useEffect, useRef, useState } from "react";
 import Constants from "../Constants";
-import { createConnection } from "../routes/Draw";
+import type { RPCClient } from "../rpc/create-client";
 import DrawPadButtons from "./DrawPadButtons";
 
 const getContext = (cr: RefObject<HTMLCanvasElement>) => {
@@ -58,16 +58,16 @@ function getImgData(cr: RefObject<HTMLCanvasElement>) {
   return '';
 }
 
-function sendImgData(ws: ReturnType<typeof createConnection>, cr: RefObject<HTMLCanvasElement>) {
+function sendImgData(client: RPCClient, cr: RefObject<HTMLCanvasElement>) {
   const img = getImgData(cr);
-  ws.setImg.mutate({ img });
+  client.setImg.mutate({ img });
 }
 
 type DrawPadProps = {
-  ws: ReturnType<typeof createConnection>;
+  client: RPCClient;
 };
 
-function DrawPad({ ws }: DrawPadProps) {
+function DrawPad({ client }: DrawPadProps) {
   const [onColor, setOnColor] = useState('green');
   const [offColor, setOffColor] = useState('black');
   const [eraseMode, setEraseMode] = useState(false);
@@ -89,7 +89,7 @@ function DrawPad({ ws }: DrawPadProps) {
         height={Constants.imgSize.height}
         onMouseMove={e => {
           draw(canvasRef, onColor, offColor, eraseMode, getPos(e));
-          sendImgData(ws, canvasRef);
+          sendImgData(client, canvasRef);
         }}
       />
       <DrawPadButtons
@@ -97,7 +97,10 @@ function DrawPad({ ws }: DrawPadProps) {
         redo={() => {}}
         eraseMode={eraseMode}
         setEraseMode={setEraseMode}
-        clear={() => clear(canvasRef, offColor)}
+        clear={() => {
+          clear(canvasRef, offColor);
+          sendImgData(client, canvasRef);
+        }}
       />
     </div>
   );
