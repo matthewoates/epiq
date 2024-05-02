@@ -8,10 +8,15 @@ import type { Role } from "../server";
 const wsURL = `${window.location.protocol.replace('http', 'ws')}//${window.location.hostname}:3015/socket`;
 
 export function createConnection(role: Role, name: string) {
+  const wsClient = createWSClient({
+    url: wsURL + `role=${role}&name=${encodeURIComponent(name)}`,
+    retryDelayMs: () => 1000
+  });
+
   return createTRPCProxyClient<RPCRouter>({
     links: [
       wsLink({
-        client: createWSClient({ url: wsURL + `role=${role}&name=${encodeURIComponent(name)}`})
+        client: wsClient
       })
     ]
   });
