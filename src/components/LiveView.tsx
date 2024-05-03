@@ -3,17 +3,27 @@ import Snapshot from "./Snapshot";
 
 type LiveViewProps = {
   client: RPCClient;
+  watchState: { name: string, img?: string, live: boolean };
   name: string;
   img: string;
   primaryColor: string;
   secondaryColor: string;
 };
 
-function LiveView({ client, name, img, primaryColor, secondaryColor }: LiveViewProps) {
+function LiveView({ client, watchState, name, img, primaryColor, secondaryColor }: LiveViewProps) {
   return (
     <div>
       <p>Name: {name}</p>
-      <Snapshot img={img}/>
+      <Snapshot
+        onClick={() => {
+          if (watchState.name === name && watchState.live) {
+            client.setWatch.mutate({ name: '__' });
+          } else {
+            client.setWatch.mutate({ name });
+          }
+        }}
+        img={img}
+      />
       <input
         type='color'
         value={primaryColor}

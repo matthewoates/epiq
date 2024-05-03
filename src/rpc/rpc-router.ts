@@ -16,6 +16,9 @@ type UserData = {
 
 const userData = new Map<string, UserData>();
 
+type WatchData = { name: string, img?: string };
+let watchData: WatchData = { name: '' };
+
 export const createContext = (opts: CreateWSSContextFnOptions) => {
   const search = opts.req.url?.split('?')[1] ?? '';
   const params: Record<string, string> = {};
@@ -58,6 +61,21 @@ function updateUserData(data: Partial<UserData> & { name: string }) {
     // overwrite data
     ...patch
   });
+}
+
+function getWatchImg() {
+  return (
+    // saved image
+    watchData.img
+    // live image
+    ?? userData.get(watchData.name)?.img
+    // no image found
+    ?? ''
+  );
+}
+
+function setWatchImg(wd: WatchData) {
+  watchData = wd;
 }
 
 // runs on the server
@@ -108,6 +126,37 @@ export const rpcRouter = t.router({
       });
     }),
 
+  watchWatch: t.procedure
+    .subscription((req) => {
+      return observable<{ name: string, img: string, live: boolean }>(emit => {
+        const onWatchUpdated = () => {
+          emit.next({
+            name: watchData.name,
+            img: getWatchImg(),
+            live: !watchData.img
+          });
+        };
+
+        ee.on('wu', onWatchUpdated);
+
+        return () => ee.off('wu', onWatchUpdated);
+      })
+    }),
+
+  setWatch: t.procedure
+    .input(
+      z.object({
+        name: z.string(),
+        img: z.string().optional()
+      })
+    ).mutation((req) => {
+      const { input } = req;
+
+      if (input.img) setWatchImg(input);
+      else setWatchImg({ name: input.name });
+      ee.emit('wu');
+    }),
+
   setUserState: t.procedure
     .input(
       z.object({
@@ -135,6 +184,7 @@ export const rpcRouter = t.router({
       if (data.img) ee.emit('ie', getUserData(name));
       if (data.primaryColor || data.secondaryColor) ee.emit('ce', data);
       ee.emit('uu', name);
+      if (data.name === watchData.name) ee.emit('wu');
     })
 });
 

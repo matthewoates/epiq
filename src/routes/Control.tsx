@@ -13,6 +13,15 @@ type ControlState = {
 function Control() {
   const { client } = useMemo(() => createConnection('control', 'host'), []);
   const [state, setState] = useState<ControlState>({ users: {} });
+  const [watchState, setWatchState] = useState<{ name: string, img?: string, live: boolean }>({ name: '', live: false });
+
+  useEffect(() => {
+    client.watchWatch.subscribe(undefined, {
+      onData: data => {
+        setWatchState(data);
+      }
+    });
+  }, []);
 
   useEffect(() => {
     client.watchUser.subscribe({}, {
@@ -34,6 +43,7 @@ function Control() {
 
       {Object.entries(state.users).map(([name, userData]) => (
         <LiveView
+          watchState={watchState}
           client={client}
           name={name}
           img={userData.img}
