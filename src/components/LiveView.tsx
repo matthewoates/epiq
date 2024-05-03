@@ -8,9 +8,18 @@ type LiveViewProps = {
   img: string;
   primaryColor: string;
   secondaryColor: string;
+  onSaveClicked: () => void;
 };
 
-function LiveView({ client, watchState, name, img, primaryColor, secondaryColor }: LiveViewProps) {
+function LiveView({
+  client,
+  watchState,
+  name,
+  img,
+  primaryColor,
+  secondaryColor,
+  onSaveClicked
+}: LiveViewProps) {
   return (
     <div>
       <p>Name: {name}</p>
@@ -45,7 +54,7 @@ function LiveView({ client, watchState, name, img, primaryColor, secondaryColor 
         client.setUserState.mutate({ name, primaryColor: 'black', secondaryColor: 'black' });
         client.setUserState.mutate({ name, primaryColor, secondaryColor });
       }}>clear</button>
-      <button>save</button>
+      <button onClick={onSaveClicked}>save</button>
     </div>
   );
 }

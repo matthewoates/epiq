@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import LiveView from "../components/LiveView";
+import UserPanel from "../components/UserPanel";
 import { createConnection } from "../rpc/create-client";
 
 type ControlState = {
@@ -44,16 +44,18 @@ function Control() {
     <div>
       <h1>control</h1>
 
-      {entries.map(([name, userData]) => (
-        <LiveView
-          watchState={watchState}
-          client={client}
-          name={name}
-          img={userData.img}
-          primaryColor={userData.primaryColor}
-          secondaryColor={userData.secondaryColor}
-        />
-      ))}
+      <div style={{ display: 'flex' }}>
+        {entries.map(([name, userData]) => (
+          <UserPanel
+            watchState={watchState}
+            client={client}
+            name={name}
+            liveImg={userData.img}
+            primaryColor={userData.primaryColor}
+            secondaryColor={userData.secondaryColor}
+          />
+        ))}
+      </div>
     </div>
   );
 }
