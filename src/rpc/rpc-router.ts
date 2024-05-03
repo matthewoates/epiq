@@ -32,40 +32,37 @@ export const createContext = (opts: CreateWSSContextFnOptions) => {
   return { name, role };
 }
 
-// TODO: infer these
-type ImgEvent = { name: string, img: string };
 type ColorEvent = { name: string, primaryColor: string, secondaryColor: string };
 
 export type TRPCContext = ReturnType<typeof createContext>;
 
 const ee = new EventEmitter();
 
-function updateUserData(name: string, patch: Partial<UserData>) {
-  const newData: UserData = {
+function getUserData(name: string) {
+  const result: UserData = {
     primaryColor: 'pink',
     secondaryColor: 'black',
     img: '',
-    ...patch
-  };
+    ...userData.get(name)
+  }
 
-  userData.set(name, newData);
+  return result;
+}
+
+function updateUserData(data: Partial<UserData> & { name: string }) {
+  const { name, ...patch } = data;
+
+  userData.set(name, {
+    ...getUserData(name),
+
+    // overwrite data
+    ...patch
+  });
 }
 
 // runs on the server
 // inferred type used in client
 export const rpcRouter = t.router({
-  watchImages: t.procedure.subscription(() => {
-    return observable<ImgEvent>(emit => {
-      const onNewImg = (ie: ImgEvent) => {
-        emit.next(ie);
-      };
-
-      ee.on('ie', onNewImg);
-
-      return () => ee.off('ie', onNewImg);
-    });
-  }),
-
   watchColors: t.procedure
     .input(
       z.object({
@@ -87,40 +84,56 @@ export const rpcRouter = t.router({
       });
     }),
 
-  setColor: t.procedure
+  // watch all users if name not specified
+  watchUser: t.procedure
     .input(
       z.object({
-        name: z.string(),
-        primaryColor: z.string(),
-        secondaryColor: z.string()
+        name: z.string().optional()
       })
     )
-    .mutation((req) => {
-      const { input } = req;
-      const { name, ...colors } = input;
+    .subscription((req) => {
+      return observable<UserData & { name: string }>(emit => {
+        const onUserUpdated = (name: string) => {
+          if (!req.input.name || name === req.input.name) {
+            emit.next({
+              name,
+              ...getUserData(name)
+            });
+          }
+        };
 
-      updateUserData(name, colors);
-      ee.emit('ce', input);
+        ee.on('uu', onUserUpdated);
+
+        return () => ee.off('uu', onUserUpdated);
+      });
     }),
 
-  setImg: t.procedure
+  setUserState: t.procedure
     .input(
       z.object({
+        // assume sender if not specified
         name: z.string().optional(),
-        img: z.string()
+        img: z.string().optional(),
+        primaryColor: z.string().optional(),
+        secondaryColor: z.string().optional()
       })
     )
     .mutation((req) => {
       const { input, ctx } = req;
-      const kb = Math.floor(input.img.length / 1000);
-      const reqName = ctx.name;
-      const targetName = input.name ?? ctx.name;
+      const name = input.name ?? ctx.name;
+      const data = {
+        ...req.input,
+        name
+      }
 
-      logger.trace(`${reqName} (${ctx.role}) sent img for ${targetName} - ${kb}KB`);
-      updateUserData(targetName, { img: input.img });
+      updateUserData({
+        ...req.input,
+        name
+      });
 
-      const ie: ImgEvent = { name: targetName, img: input.img };
-      ee.emit('ie', ie);
+      if (data.img) ee.emit('ie', data);
+      if (data.primaryColor || data.secondaryColor) ee.emit('ce', data);
+      ee.emit('uu', name);
     })
 });
 

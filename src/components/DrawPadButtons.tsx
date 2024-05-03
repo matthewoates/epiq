@@ -1,4 +1,6 @@
 type DrawButtonProps = {
+  primaryColor: string;
+  secondaryColor: string;
   undo: () => void;
   redo: () => void;
   eraseMode: boolean;
@@ -6,7 +8,15 @@ type DrawButtonProps = {
   clear: () => void;
 };
 
-function DrawPadButtons({ undo, redo, eraseMode, setEraseMode, clear }: DrawButtonProps) {
+function DrawPadButtons({
+  primaryColor,
+  secondaryColor,
+  undo,
+  redo,
+  eraseMode,
+  setEraseMode,
+  clear
+}: DrawButtonProps) {
   return (
     <div>
       <button onClick={undo}>undo</button>
@@ -14,6 +24,7 @@ function DrawPadButtons({ undo, redo, eraseMode, setEraseMode, clear }: DrawButt
       <button onClick={redo}>redo</button>
 
       <button
+        style={{ background: primaryColor }}
         onClick={() => setEraseMode(false)}
         disabled={!eraseMode}
       >
@@ -21,6 +32,7 @@ function DrawPadButtons({ undo, redo, eraseMode, setEraseMode, clear }: DrawButt
       </button>
 
       <button
+        style={{ background: secondaryColor }}
         onClick={() => setEraseMode(true)}
         disabled={eraseMode}
       >

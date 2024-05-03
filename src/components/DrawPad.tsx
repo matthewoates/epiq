@@ -60,7 +60,7 @@ function getImgData(cr: RefObject<HTMLCanvasElement>) {
 
 function sendImgData(client: RPCClient, cr: RefObject<HTMLCanvasElement>) {
   const img = getImgData(cr);
-  client.setImg.mutate({ img });
+  client.setUserState.mutate({ img });
 }
 
 type DrawPadProps = {
@@ -79,11 +79,11 @@ function DrawPad({ client }: DrawPadProps) {
     client.watchColors.subscribe({}, {
       onData: data => {
         const { primaryColor, secondaryColor } = data;
-        setOnColor(primaryColor);
-        setOffColor(secondaryColor);
+        if (primaryColor) setOnColor(primaryColor);
+        if (secondaryColor) setOffColor(secondaryColor);
       }
     });
-  }, [offColor]);
+  }, [onColor, offColor]);
 
   return (
     <div>
@@ -101,6 +101,8 @@ function DrawPad({ client }: DrawPadProps) {
         }}
       />
       <DrawPadButtons
+        primaryColor={onColor}
+        secondaryColor={offColor}
         undo={() => {}}
         redo={() => {}}
         eraseMode={eraseMode}
@@ -110,6 +112,8 @@ function DrawPad({ client }: DrawPadProps) {
           sendImgData(client, canvasRef);
         }}
       />
+      <p>primary: {onColor}</p>
+      <p>secondary: {offColor}</p>
     </div>
   );
 }
