@@ -40,8 +40,8 @@ const ee = new EventEmitter();
 
 function getUserData(name: string) {
   const result: UserData = {
-    primaryColor: 'pink',
-    secondaryColor: 'black',
+    primaryColor: '#00ff00',
+    secondaryColor: '#000000',
     img: '',
     ...userData.get(name)
   }
@@ -131,7 +131,8 @@ export const rpcRouter = t.router({
         name
       });
 
-      if (data.img) ee.emit('ie', data);
+      // if (data.img) ee.emit('ie', data);
+      if (data.img) ee.emit('ie', getUserData(name));
       if (data.primaryColor || data.secondaryColor) ee.emit('ce', data);
       ee.emit('uu', name);
     })
