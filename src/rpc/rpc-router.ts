@@ -137,6 +137,9 @@ export const rpcRouter = t.router({
           });
         };
 
+        // send the current state
+        onWatchUpdated();
+
         ee.on('wu', onWatchUpdated);
 
         return () => ee.off('wu', onWatchUpdated);
