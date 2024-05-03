@@ -37,11 +37,14 @@ function Control() {
     });
   }, []);
 
+  const entries = Object.entries(state.users)
+    .sort(([a], [b]) => a.localeCompare(b));
+
   return (
     <div>
       <h1>control</h1>
 
-      {Object.entries(state.users).map(([name, userData]) => (
+      {entries.map(([name, userData]) => (
         <LiveView
           watchState={watchState}
           client={client}
