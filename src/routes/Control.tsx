@@ -16,8 +16,6 @@ function Control() {
   useEffect(() => {
     client.watchImages.subscribe(undefined, {
       onData: data => {
-        console.log(data);
-
         setState(state => {
           const newState = structuredClone(state);
 

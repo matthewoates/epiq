@@ -1,5 +1,6 @@
 import { applyWSSHandler } from '@trpc/server/adapters/ws';
 import * as WebSocket from 'ws';
+import logger from '../logger';
 import { createContext, rpcRouter } from '../rpc/rpc-router';
 
 const PORT = 3015;
@@ -14,10 +15,10 @@ const handler = applyWSSHandler({
 });
 
 process.on('SIGTERM', () => {
-  console.info('SIGTERM. broadcast reconnect');
+  logger.info('SIGTERM. broadcast reconnect');
   // not sure if this does anything
   handler.broadcastReconnectNotification();
   wss.close();
 })
 
-console.log(`WebSocket server started on port ${PORT}`);
+logger.info(`Listening on port ${PORT}`);

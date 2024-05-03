@@ -3,6 +3,7 @@ import type { CreateWSSContextFnOptions } from '@trpc/server/adapters/ws';
 import { observable } from '@trpc/server/observable';
 import EventEmitter from 'events';
 import { z } from 'zod';
+import logger from '../logger';
 import type { Role } from '../server';
 
 const t = initTRPC.context<TRPCContext>().create();
@@ -19,9 +20,9 @@ export const createContext = (opts: CreateWSSContextFnOptions) => {
       params[key] = val;
     });
 
-  console.log('new connection:', opts.req.url, { params });
   const name = params.name ?? 'NONAME';
   const role: Role = (params.role as Role) ?? 'draw';
+  logger.info(`${name} (${role}) connected`);
   return { name, role };
 }
 
@@ -59,7 +60,7 @@ export const rpcRouter = t.router({
       const reqName = ctx.name;
       const targetName = input.name ?? ctx.name;
 
-      console.log(`${reqName} (${ctx.role}) sent img for ${targetName} - ${kb}KB`);
+      logger.trace(`${reqName} (${ctx.role}) sent img for ${targetName} - ${kb}KB`);
       userImages.set(targetName, input.img);
 
       const ie: ImgEvent = { name: targetName, img: input.img };
