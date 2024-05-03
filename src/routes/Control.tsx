@@ -31,6 +31,10 @@ function Control() {
     <div>
       <h1>control</h1>
 
+      <button onClick={() => client.setColor.mutate({ name: 'Ray', primaryColor: 'red', secondaryColor: 'black' })}>red</button>
+      <button onClick={() => client.setColor.mutate({ name: 'Ray', primaryColor: 'green', secondaryColor: 'black' })}>green</button>
+      <button onClick={() => client.setColor.mutate({ name: 'Ray', primaryColor: 'blue', secondaryColor: 'black' })}>blue</button>
+
       {Object.entries(state.users).map(([name, userData]) => (
         <div key={name}>
           <h1>{name}</h1>

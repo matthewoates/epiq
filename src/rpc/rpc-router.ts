@@ -8,7 +8,13 @@ import type { Role } from '../server';
 
 const t = initTRPC.context<TRPCContext>().create();
 
-const userImages = new Map<string, string>();
+type UserData = {
+  primaryColor: string;
+  secondaryColor: string;
+  img: string;
+}
+
+const userData = new Map<string, UserData>();
 
 export const createContext = (opts: CreateWSSContextFnOptions) => {
   const search = opts.req.url?.split('?')[1] ?? '';
@@ -26,11 +32,24 @@ export const createContext = (opts: CreateWSSContextFnOptions) => {
   return { name, role };
 }
 
+// TODO: infer these
 type ImgEvent = { name: string, img: string };
+type ColorEvent = { name: string, primaryColor: string, secondaryColor: string };
 
 export type TRPCContext = ReturnType<typeof createContext>;
 
 const ee = new EventEmitter();
+
+function updateUserData(name: string, patch: Partial<UserData>) {
+  const newData: UserData = {
+    primaryColor: 'pink',
+    secondaryColor: 'black',
+    img: '',
+    ...patch
+  };
+
+  userData.set(name, newData);
+}
 
 // runs on the server
 // inferred type used in client
@@ -47,6 +66,43 @@ export const rpcRouter = t.router({
     });
   }),
 
+  watchColors: t.procedure
+    .input(
+      z.object({
+        name: z.string().optional()
+      })
+    ).subscription((req) => {
+      return observable<ColorEvent>(emit => {
+        const targetName = req.input.name ?? req.ctx.name;
+
+        const onNewColors = (ce: ColorEvent) => {
+          if (targetName === ce.name) {
+            emit.next(ce);
+          }
+        };
+
+        ee.on('ce', onNewColors);
+
+        return () => ee.off('ce', onNewColors);
+      });
+    }),
+
+  setColor: t.procedure
+    .input(
+      z.object({
+        name: z.string(),
+        primaryColor: z.string(),
+        secondaryColor: z.string()
+      })
+    )
+    .mutation((req) => {
+      const { input } = req;
+      const { name, ...colors } = input;
+
+      updateUserData(name, colors);
+      ee.emit('ce', input);
+    }),
+
   setImg: t.procedure
     .input(
       z.object({
@@ -61,7 +117,7 @@ export const rpcRouter = t.router({
       const targetName = input.name ?? ctx.name;
 
       logger.trace(`${reqName} (${ctx.role}) sent img for ${targetName} - ${kb}KB`);
-      userImages.set(targetName, input.img);
+      updateUserData(targetName, { img: input.img });
 
       const ie: ImgEvent = { name: targetName, img: input.img };
       ee.emit('ie', ie);

@@ -75,6 +75,14 @@ function DrawPad({ client }: DrawPadProps) {
 
   useEffect(() => {
     clear(canvasRef, offColor);
+
+    client.watchColors.subscribe({}, {
+      onData: data => {
+        const { primaryColor, secondaryColor } = data;
+        setOnColor(primaryColor);
+        setOffColor(secondaryColor);
+      }
+    });
   }, [offColor]);
 
   return (
