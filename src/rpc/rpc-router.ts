@@ -122,6 +122,8 @@ export const rpcRouter = t.router({
 
         ee.on('uu', onUserUpdated);
 
+        for (const name of userData.keys()) onUserUpdated(name);
+
         return () => ee.off('uu', onUserUpdated);
       });
     }),
