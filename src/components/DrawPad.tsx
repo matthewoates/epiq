@@ -75,6 +75,7 @@ function DrawPad({ client }: DrawPadProps) {
 
   useEffect(() => {
     clear(canvasRef, offColor);
+    sendImgData(client, canvasRef);
 
     client.watchColors.subscribe({}, {
       onData: data => {

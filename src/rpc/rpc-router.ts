@@ -98,6 +98,13 @@ export const rpcRouter = t.router({
 
         ee.on('ce', onNewColors);
 
+        const { primaryColor, secondaryColor } = getUserData(targetName);
+        onNewColors({
+          name: targetName,
+          primaryColor,
+          secondaryColor
+        });
+
         return () => ee.off('ce', onNewColors);
       });
     }),
