@@ -2,6 +2,7 @@ import type { RPCClient } from "../rpc/create-client";
 import Snapshot from "./Snapshot";
 
 type LiveViewProps = {
+  showAdmin: boolean;
   client: RPCClient;
   watchState: { name: string, img?: string, live: boolean };
   name: string;
@@ -12,6 +13,7 @@ type LiveViewProps = {
 };
 
 function LiveView({
+  showAdmin,
   client,
   watchState,
   name,
@@ -33,22 +35,29 @@ function LiveView({
         }}
         img={img}
       />
-      <input
+      {showAdmin && (
+        <button onClick={() => {
+          client.kickUser.mutate({ name });
+        }}>
+          kick
+        </button>
+      )}
+      {showAdmin && (<input
         type='color'
         value={primaryColor}
         onChange={e => client.setUserState.mutate({
           name,
           primaryColor: e.target.value
         })}
-      />
-      <input
+      />)}
+      {showAdmin && (<input
         type='color'
         value={secondaryColor}
         onChange={e => client.setUserState.mutate({
           name,
           secondaryColor: e.target.value
         })}
-      />
+      />)}
       <button onClick={() => {
         // forces a clear
         client.setUserState.mutate({ name, primaryColor: 'black', secondaryColor: 'black' });

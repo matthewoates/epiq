@@ -14,6 +14,7 @@ function Control() {
   const { client } = useMemo(() => createConnection('control', 'host'), []);
   const [state, setState] = useState<ControlState>({ users: {} });
   const [watchState, setWatchState] = useState<{ name: string, img?: string, live: boolean }>({ name: '', live: false });
+  const [showAdmin, setShowAdmin] = useState(false);
 
   useEffect(() => {
     client.watchWatch.subscribe(undefined, {
@@ -43,10 +44,15 @@ function Control() {
   return (
     <div>
       <h1>control</h1>
+      <label>
+        <input type='checkbox' checked={showAdmin} onClick={() => setShowAdmin(!showAdmin)}/>
+        Show admin
+      </label>
 
       <div style={{ display: 'flex' }}>
         {entries.map(([name, userData]) => (
           <UserPanel
+            showAdmin={showAdmin}
             watchState={watchState}
             client={client}
             name={name}

@@ -4,6 +4,7 @@ import LiveView from "./LiveView";
 import Snapshot from "./Snapshot";
 
 type UserPanelProps = {
+  showAdmin: boolean;
   client: RPCClient;
   watchState: { name: string, img?: string, live: boolean };
   name: string;
@@ -13,6 +14,7 @@ type UserPanelProps = {
 }
 
 function UserPanel({
+  showAdmin,
   client,
   watchState,
   name,
@@ -31,6 +33,7 @@ function UserPanel({
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1em' }}>
       <LiveView
+        showAdmin={showAdmin}
         client={client}
         watchState={watchState}
         name={name}

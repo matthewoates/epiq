@@ -109,6 +109,16 @@ export const rpcRouter = t.router({
       });
     }),
 
+  kickUser: t.procedure
+    .input(
+      z.object({
+        name: z.string()
+      })
+    )
+    .mutation((req) => {
+      userData.delete(req.input.name);
+    }),
+
   // watch all users if name not specified
   watchUser: t.procedure
     .input(
