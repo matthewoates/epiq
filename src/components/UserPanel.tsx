@@ -62,7 +62,7 @@ function UserPanel({
           img={img}
           onDeleteSnapshot={() => deleteSnapshot(img)}
           onShowSnapshot={() => {
-            const used = watchState.img === img;
+            const used = watchState.img === img && !watchState.live && watchState.name === name;
 
             if (used) client.setWatch.mutate({ name: '__' });
             else client.setWatch.mutate({ name, img });

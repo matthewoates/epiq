@@ -19,7 +19,7 @@ function Watch() {
     <div>
       <h1>watch</h1>
       <p>name: {state.name}</p>
-      <Snapshot img={state.img ?? ''}/>
+      <Snapshot img={state.img ?? ''} selected={false}/>
     </div>
   );
 }

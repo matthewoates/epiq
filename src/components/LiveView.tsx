@@ -23,9 +23,12 @@ function LiveView({
   secondaryColor,
   onSaveClicked
 }: LiveViewProps) {
+  const selected = watchState.name === name && watchState.live;
+
   return (
     <Flex>
       <Snapshot
+        selected={selected}
         onClick={() => {
           if (watchState.name === name && watchState.live) {
             client.setWatch.mutate({ name: '__' });

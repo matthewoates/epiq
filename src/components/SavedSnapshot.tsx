@@ -13,11 +13,14 @@ function SavedSnapshot({ watchState, onShowSnapshot, name, img, onDeleteSnapshot
   return (
     <Flex>
       <Snapshot
+        selected={name === watchState.name && img === watchState.img && !watchState.live}
         img={img}
         onClick={onShowSnapshot}
       />
       <Flex direction='column' style={{ width: 48 }}>
         <Button
+          variant='outline'
+          color='red'
           style={{ flex: 1 }}
           onClick={onDeleteSnapshot}
         >

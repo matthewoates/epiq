@@ -5,14 +5,18 @@ type SnapshotProps = {
   onClick?: () => void;
   img: string;
   overlay?: ReactNode;
+  selected: boolean;
 };
 
-function Snapshot({ onClick, img, overlay }: SnapshotProps) {
+const BOX_SHADOW = '0 0 10px 10px #0f09';
+
+function Snapshot({ onClick, img, overlay, selected }: SnapshotProps) {
   return (
     <div
       style={{
         ...Constants.imgSize,
-        backgroundImage: `url("${img}")`
+        backgroundImage: `url("${img}")`,
+        boxShadow: selected ? BOX_SHADOW : 'none'
       }}
       onClick={onClick}
     >
