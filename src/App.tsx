@@ -1,3 +1,5 @@
+import { Theme } from '@radix-ui/themes';
+import '@radix-ui/themes/styles.css';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import './App.css';
 import Control from './routes/Control';
@@ -26,7 +28,11 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <RouterProvider router={router}/>
+    <>
+      <Theme appearance='dark'>
+        <RouterProvider router={router}/>
+      </Theme>
+    </>
   );
 }
 
