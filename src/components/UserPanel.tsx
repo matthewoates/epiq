@@ -1,7 +1,8 @@
+import { Card, Text } from "@radix-ui/themes";
 import { useState } from "react";
 import { RPCClient } from "../rpc/create-client";
 import LiveView from "./LiveView";
-import Snapshot from "./Snapshot";
+import SavedSnapshot from "./SavedSnapshot";
 
 type UserPanelProps = {
   showAdmin: boolean;
@@ -24,14 +25,24 @@ function UserPanel({
 }: UserPanelProps) {
   const [saved, setSaved] = useState<string[]>([]);
 
-  const onSaveClicked = () => {
+  const onSaveLiveViewClicked = () => {
     if (!saved.includes(liveImg)) {
       setSaved([...saved, liveImg]);
     }
   };
 
+  const deleteSnapshot = (img: string) => {
+    setSaved(saved.filter(el => el !== img));
+  };
+
+  const isBeingWatched = name === watchState.name;
+
   return (
+    <Card style={{ background:  isBeingWatched ? 'rgba(255,255,255,0.1)' : 'transparent' }}>
+
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1em' }}>
+      <Text size='5'>{name}</Text>
+
       <LiveView
         showAdmin={showAdmin}
         client={client}
@@ -40,14 +51,17 @@ function UserPanel({
         img={liveImg}
         primaryColor={primaryColor}
         secondaryColor={secondaryColor}
-        onSaveClicked={onSaveClicked}
+        onSaveClicked={onSaveLiveViewClicked}
       />
 
       {saved.map(img => (
-        <Snapshot
+        <SavedSnapshot
           key={img}
+          name={name}
+          watchState={watchState}
           img={img}
-          onClick={() => {
+          onDeleteSnapshot={() => deleteSnapshot(img)}
+          onShowSnapshot={() => {
             const used = watchState.img === img;
 
             if (used) client.setWatch.mutate({ name: '__' });
@@ -56,6 +70,7 @@ function UserPanel({
         />
       ))}
     </div>
+    </Card>
   );
 }
 

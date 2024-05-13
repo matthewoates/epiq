@@ -1,3 +1,4 @@
+import { Button, Flex, Text } from "@radix-ui/themes";
 import type { RPCClient } from "../rpc/create-client";
 import Snapshot from "./Snapshot";
 
@@ -23,8 +24,7 @@ function LiveView({
   onSaveClicked
 }: LiveViewProps) {
   return (
-    <div>
-      <p>Name: {name}</p>
+    <Flex>
       <Snapshot
         onClick={() => {
           if (watchState.name === name && watchState.live) {
@@ -34,37 +34,46 @@ function LiveView({
           }
         }}
         img={img}
+        overlay={<Text>{name}</Text>}
       />
-      {showAdmin && (
-        <button onClick={() => {
-          client.kickUser.mutate({ name });
-        }}>
-          kick
-        </button>
-      )}
-      {showAdmin && (<input
-        type='color'
-        value={primaryColor}
-        onChange={e => client.setUserState.mutate({
-          name,
-          primaryColor: e.target.value
-        })}
-      />)}
-      {showAdmin && (<input
-        type='color'
-        value={secondaryColor}
-        onChange={e => client.setUserState.mutate({
-          name,
-          secondaryColor: e.target.value
-        })}
-      />)}
-      <button onClick={() => {
-        // forces a clear
-        client.setUserState.mutate({ name, primaryColor: 'black', secondaryColor: 'black' });
-        client.setUserState.mutate({ name, primaryColor, secondaryColor });
-      }}>clear</button>
-      <button onClick={onSaveClicked}>save</button>
-    </div>
+      <Flex direction='column' style={{ width: 48 }} gap='1'>
+        {showAdmin && (
+          <Button color='gray' onClick={() => {
+            client.kickUser.mutate({ name });
+          }}>
+            kick
+          </Button>
+        )}
+
+        {showAdmin && (<input
+          type='color'
+          value={primaryColor}
+          onChange={e => client.setUserState.mutate({
+            name,
+            primaryColor: e.target.value
+          })}
+        />)}
+
+        {showAdmin && (<input
+          type='color'
+          value={secondaryColor}
+          onChange={e => client.setUserState.mutate({
+            name,
+            secondaryColor: e.target.value
+          })}
+        />)}
+
+        <Button color='red' variant='outline' onClick={() => {
+          // forces a clear
+          client.setUserState.mutate({ name, primaryColor: 'black', secondaryColor: 'black' });
+          client.setUserState.mutate({ name, primaryColor, secondaryColor });
+        }}>clear</Button>
+
+        <Button color='gray' variant='outline' style={{ flex: 1 }} onClick={onSaveClicked}>
+          💾
+        </Button>
+      </Flex>
+    </Flex>
   );
 }
 

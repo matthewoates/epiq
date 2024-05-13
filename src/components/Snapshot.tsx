@@ -1,18 +1,23 @@
+import { ReactNode } from "react";
 import Constants from "../Constants";
 
 type SnapshotProps = {
   onClick?: () => void;
   img: string;
+  overlay?: ReactNode;
 };
 
-function Snapshot({ onClick, img }: SnapshotProps) {
+function Snapshot({ onClick, img, overlay }: SnapshotProps) {
   return (
-    <img
-      style={Constants.imgSize}
+    <div
+      style={{
+        ...Constants.imgSize,
+        backgroundImage: `url("${img}")`
+      }}
       onClick={onClick}
-      alt=''
-      src={img}
-    />
+    >
+      {overlay ?? null}
+    </div>
   );
 }
 

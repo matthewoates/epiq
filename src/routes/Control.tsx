@@ -1,3 +1,4 @@
+import { Button, Card, Flex, Text } from "@radix-ui/themes";
 import { useEffect, useMemo, useState } from "react";
 import UserPanel from "../components/UserPanel";
 import { createConnection } from "../rpc/create-client";
@@ -43,13 +44,22 @@ function Control() {
 
   return (
     <div>
-      <h1>control</h1>
-      <label>
-        <input type='checkbox' checked={showAdmin} onClick={() => setShowAdmin(!showAdmin)}/>
-        Show admin
-      </label>
+      <Card>
+        <Flex align='center' justify='between'>
+          <Text size='7'>EPiQ Draw</Text>
 
-      <div style={{ display: 'flex' }}>
+          <Flex align='center' gap='2'>
+            <Button variant={showAdmin ? 'solid' : 'outline'} onClick={() => setShowAdmin(!showAdmin)}>
+              {showAdmin ? 'Hide Admin' : 'Show Admin'}
+            </Button>
+            <a href='/watch' target='_blank'>
+              <Button>TV View</Button>
+            </a>
+          </Flex>
+        </Flex>
+      </Card>
+
+      <Flex gap={'2'}>
         {entries.map(([name, userData]) => (
           <UserPanel
             showAdmin={showAdmin}
@@ -61,7 +71,7 @@ function Control() {
             secondaryColor={userData.secondaryColor}
           />
         ))}
-      </div>
+      </Flex>
     </div>
   );
 }
