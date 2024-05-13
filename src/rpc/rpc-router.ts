@@ -159,6 +159,8 @@ export const rpcRouter = t.router({
         // send the current state
         onWatchUpdated();
 
+        logger.info('Watching:', { name: watchData.name, live: !watchData.img });
+
         ee.on('wu', onWatchUpdated);
 
         return () => ee.off('wu', onWatchUpdated);
@@ -176,6 +178,7 @@ export const rpcRouter = t.router({
 
       if (input.img) setWatchImg(input);
       else setWatchImg({ name: input.name });
+
       ee.emit('wu');
     }),
 
