@@ -16,6 +16,7 @@ function Control() {
   const [state, setState] = useState<ControlState>({ users: {} });
   const [watchState, setWatchState] = useState<{ name: string, img?: string, live: boolean }>({ name: '', live: false });
   const [showAdmin, setShowAdmin] = useState(false);
+  const [showTV, setShowTV] = useState(false);
 
   useEffect(() => {
     client.watchWatch.subscribe(undefined, {
@@ -48,21 +49,22 @@ function Control() {
         <Flex align='center' justify='between'>
           <Text size='7'>EPiQ Draw</Text>
 
-          <Flex align='center' gap='2'>
-            <Button variant={showAdmin ? 'solid' : 'outline'} onClick={() => setShowAdmin(!showAdmin)}>
-              {showAdmin ? 'Hide Admin' : 'Show Admin'}
-            </Button>
-            <a href='/watch' target='_blank'>
-              <Button>TV View</Button>
-            </a>
+          <Flex align='center' gap='4'>
+            <Flex align='center' gap='2'>
+              <Button color='green'>save all</Button>
+              <Button color='pink'>clear all</Button>
+            </Flex>
+            <Flex align='center' gap='2'>
+              <Button variant={showTV ? 'solid' : 'outline'} onClick={() => setShowTV(!showTV)}>
+                {showTV ? 'Hide TV' : 'Show TV'}
+              </Button>
+              <Button variant={showAdmin ? 'solid' : 'outline'} onClick={() => setShowAdmin(!showAdmin)}>
+                {showAdmin ? 'Hide Admin' : 'Show Admin'}
+              </Button>
+            </Flex>
           </Flex>
         </Flex>
       </Card>
-
-      <Flex gap='2'>
-        <Button>save all</Button>
-        <Button>clear all</Button>
-      </Flex>
 
       <Flex gap='2'>
         {entries.map(([name, userData]) => (
