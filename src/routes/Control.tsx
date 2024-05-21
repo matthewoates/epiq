@@ -59,7 +59,12 @@ function Control() {
         </Flex>
       </Card>
 
-      <Flex gap={'2'}>
+      <Flex gap='2'>
+        <Button>save all</Button>
+        <Button>clear all</Button>
+      </Flex>
+
+      <Flex gap='2'>
         {entries.map(([name, userData]) => (
           <UserPanel
             showAdmin={showAdmin}
