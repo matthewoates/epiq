@@ -10,7 +10,7 @@ type LiveViewProps = {
   img: string;
   primaryColor: string;
   secondaryColor: string;
-  onSaveClicked: () => void;
+  onSaveClicked: (() => void) | null;
 };
 
 function LiveView({
@@ -72,7 +72,13 @@ function LiveView({
           client.setUserState.mutate({ name, primaryColor, secondaryColor });
         }}>clear</Button>
 
-        <Button color='gray' variant='outline' style={{ flex: 1 }} onClick={onSaveClicked}>
+        <Button
+          color='gray'
+          variant='outline'
+          style={{ flex: 1 }}
+          onClick={onSaveClicked ?? undefined}
+          disabled={!onSaveClicked}
+        >
           💾
         </Button>
       </Flex>

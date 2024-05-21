@@ -24,12 +24,11 @@ function UserPanel({
   secondaryColor
 }: UserPanelProps) {
   const [saved, setSaved] = useState<string[]>([]);
+  const canSave = !saved.includes(liveImg);
 
-  const onSaveLiveViewClicked = () => {
-    if (!saved.includes(liveImg)) {
-      setSaved([...saved, liveImg]);
-    }
-  };
+  const onSaveLiveViewClicked = canSave
+    ? () => setSaved([...saved, liveImg])
+    : null;
 
   const deleteSnapshot = (img: string) => {
     setSaved(saved.filter(el => el !== img));
