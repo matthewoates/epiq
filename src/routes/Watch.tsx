@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import Snapshot from "../components/Snapshot";
+import WatchView from "../components/WatchView";
 import { createConnection } from "../rpc/create-client";
 
 function Watch() {
@@ -16,11 +16,7 @@ function Watch() {
 
 
   return (
-    <div>
-      <h1>watch</h1>
-      <p>name: {state.name}</p>
-      <Snapshot img={state.img ?? ''} selected={false}/>
-    </div>
+    <WatchView img={state.img ?? null}/>
   );
 }
 
