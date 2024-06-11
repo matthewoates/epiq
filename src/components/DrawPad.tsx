@@ -22,16 +22,22 @@ const draw = (
   onColor: string,
   offColor: string,
   eraseMode: boolean,
-  { x, y }: { x: number, y: number }
+  pos: { x: number, y: number },
+  prev: { x: number, y: number }[]
 ) => {
   const ctx = getContext(cr);
 
   if (ctx) {
-    ctx.fillStyle = eraseMode ? offColor : onColor;
     let strokeWidth = Constants.strokeWidth;
     if (eraseMode) strokeWidth *= 3;
+    ctx.strokeStyle = eraseMode ? offColor : onColor;
+    ctx.lineWidth = strokeWidth;
 
-    ctx.fillRect(x, y, strokeWidth, strokeWidth);
+    ctx.beginPath();
+    const points = [...prev, pos];
+    ctx.moveTo(points[0].x, points[0].y);
+    points.forEach(({ x, y }) => ctx.lineTo(x, y));
+    ctx.stroke();
   }
 }
 
@@ -90,6 +96,7 @@ function DrawPad({ client, name }: DrawPadProps) {
   const [eraseMode, setEraseMode] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const drawSize = getDrawSize(useContext(SizeContext));
+  const prevPos = useRef<{ x: number, y: number }[]>([]);
 
   useEffect(() => {
     clear(canvasRef, offColor);
@@ -106,12 +113,17 @@ function DrawPad({ client, name }: DrawPadProps) {
 
   function touchEvent(e: TouchEvent) {
     e.preventDefault(); // prevent the page from moving around
-    console.log('prevented?', e.defaultPrevented);
 
     const pos = getPos(e, Constants.imgSize.width / drawSize.width);
 
     if (pos) {
-      draw(canvasRef, onColor, offColor, eraseMode, pos);
+      if (e.type === 'touchstart') {
+        prevPos.current.length = 0;
+      }
+      while (prevPos.current.length > 2) prevPos.current.shift();
+      const prev = prevPos.current ?? pos;
+      draw(canvasRef, onColor, offColor, eraseMode, pos, prev);
+      prevPos.current.push(pos);
       sendImgData(client, canvasRef);
     }
   }
