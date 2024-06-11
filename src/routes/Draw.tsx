@@ -16,7 +16,7 @@ function Draw() {
     // <div style={{ display: 'flex', width: '100%', height: '100%', overflow: 'hidden' }}>
     <div style={{ display: 'flex', width: 915, height: 412, overflow: 'hidden' }}>
       <SizeProvider waitForSize>
-        <DrawPad client={client} />
+        <DrawPad client={client} name={name} />
       </SizeProvider>
     </div>
   );

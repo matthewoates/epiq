@@ -66,6 +66,7 @@ function sendImgData(client: RPCClient, cr: RefObject<HTMLCanvasElement>) {
 
 type DrawPadProps = {
   client: RPCClient;
+  name: string;
 };
 
 function getDrawSize(size: { width: number, height: number }) {
@@ -80,7 +81,7 @@ function getDrawSize(size: { width: number, height: number }) {
   return { width, height };
 }
 
-function DrawPad({ client }: DrawPadProps) {
+function DrawPad({ client, name }: DrawPadProps) {
   const [onColor, setOnColor] = useState('green');
   const [offColor, setOffColor] = useState('black');
   const [eraseMode, setEraseMode] = useState(false);
@@ -116,6 +117,7 @@ function DrawPad({ client }: DrawPadProps) {
         }}
       />
       <DrawPadButtons
+        name={name}
         primaryColor={onColor}
         secondaryColor={offColor}
         undo={() => { }}

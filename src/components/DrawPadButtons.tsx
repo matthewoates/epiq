@@ -1,7 +1,8 @@
-import { Button } from "@radix-ui/themes";
+import { Button, Flex, Text } from "@radix-ui/themes";
 import { IconArrowBackUp, IconArrowForwardUp, IconSquareX } from "@tabler/icons-react";
 
 type DrawButtonProps = {
+  name: string;
   primaryColor: string;
   secondaryColor: string;
   undo: () => void;
@@ -12,6 +13,7 @@ type DrawButtonProps = {
 };
 
 function DrawPadButtons({
+  name,
   primaryColor,
   secondaryColor,
   undo,
@@ -27,7 +29,7 @@ function DrawPadButtons({
       padding: '0.5em',
       flex: 1,
       display: 'grid',
-      gridTemplateRows: '1fr 1fr 1fr',
+      gridTemplateRows: '1fr 3fr 1fr',
       gridTemplateColumns: '1fr 1fr'
     }}>
       <Button color='gray' style={{ height: '100%' }} onClick={undo}><IconArrowBackUp size={64} /></Button>
@@ -37,9 +39,7 @@ function DrawPadButtons({
         style={{ height: '100%', background: primaryColor }}
         onClick={() => setEraseMode(false)}
         disabled={!eraseMode}
-      >
-        pencil
-      </Button>
+      />
 
       <Button
         style={{ height: '100%', background: secondaryColor }}
@@ -53,6 +53,11 @@ function DrawPadButtons({
       }}>
         <IconSquareX size={64} />
       </Button>
+
+      <Flex justify='between' direction='column' align='end'>
+        <Text size='7' style={{ fontFamily: 'norwester' }}>{name}</Text>
+        <Text size='7' style={{ fontFamily: 'norwester' }}>EPQ ©2024</Text>
+      </Flex>
     </div >
   );
 }
