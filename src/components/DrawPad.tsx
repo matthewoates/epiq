@@ -1,7 +1,8 @@
-import { RefObject, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState, type RefObject } from "react";
 import Constants from "../Constants";
 import type { RPCClient } from "../rpc/create-client";
 import DrawPadButtons from "./DrawPadButtons";
+import { SizeContext } from "./SizeProvider";
 
 const getContext = (cr: RefObject<HTMLCanvasElement>) => {
   return cr.current?.getContext('2d');
@@ -67,11 +68,24 @@ type DrawPadProps = {
   client: RPCClient;
 };
 
+function getDrawSize(size: { width: number, height: number }) {
+  let { width, height } = size;
+
+  if (width / 4 > height / 3) {
+    width = Math.floor(height * (4 / 3));
+  } else {
+    height = Math.floor(width * (3 / 4));
+  }
+
+  return { width, height };
+}
+
 function DrawPad({ client }: DrawPadProps) {
   const [onColor, setOnColor] = useState('green');
   const [offColor, setOffColor] = useState('black');
   const [eraseMode, setEraseMode] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const drawSize = getDrawSize(useContext(SizeContext));
 
   useEffect(() => {
     clear(canvasRef, offColor);
@@ -87,12 +101,12 @@ function DrawPad({ client }: DrawPadProps) {
   }, [onColor, offColor]);
 
   return (
-    <div>
+    <div style={{ display: 'flex' }}>
       <canvas
         ref={canvasRef}
         style={{
           border: '1px solid black',
-          ...Constants.imgSize
+          ...drawSize
         }}
         width={Constants.imgSize.width}
         height={Constants.imgSize.height}
@@ -104,8 +118,8 @@ function DrawPad({ client }: DrawPadProps) {
       <DrawPadButtons
         primaryColor={onColor}
         secondaryColor={offColor}
-        undo={() => {}}
-        redo={() => {}}
+        undo={() => { }}
+        redo={() => { }}
         eraseMode={eraseMode}
         setEraseMode={setEraseMode}
         clear={() => {
@@ -113,8 +127,6 @@ function DrawPad({ client }: DrawPadProps) {
           sendImgData(client, canvasRef);
         }}
       />
-      <p>primary: {onColor}</p>
-      <p>secondary: {offColor}</p>
     </div>
   );
 }

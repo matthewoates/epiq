@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import DrawPad from "../components/DrawPad";
+import SizeProvider from "../components/SizeProvider";
 import { createConnection } from "../rpc/create-client";
 
 function Draw() {
@@ -12,10 +13,11 @@ function Draw() {
   // }, []);
 
   return (
-    <div>
-      <h1>draw</h1>
-      <DrawPad client={client}/>
-      <p>name: {name}</p>
+    // <div style={{ display: 'flex', width: '100%', height: '100%', overflow: 'hidden' }}>
+    <div style={{ display: 'flex', width: 915, height: 412, overflow: 'hidden' }}>
+      <SizeProvider waitForSize>
+        <DrawPad client={client} />
+      </SizeProvider>
     </div>
   );
 }

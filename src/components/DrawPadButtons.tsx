@@ -1,3 +1,6 @@
+import { Button } from "@radix-ui/themes";
+import { IconArrowBackUp, IconArrowForwardUp, IconSquareX } from "@tabler/icons-react";
+
 type DrawButtonProps = {
   primaryColor: string;
   secondaryColor: string;
@@ -18,32 +21,39 @@ function DrawPadButtons({
   clear
 }: DrawButtonProps) {
   return (
-    <div>
-      <button onClick={undo}>undo</button>
+    <div style={{
+      background: '#26A1B0',
+      gap: '0.5em',
+      padding: '0.5em',
+      flex: 1,
+      display: 'grid',
+      gridTemplateRows: '1fr 1fr 1fr',
+      gridTemplateColumns: '1fr 1fr'
+    }}>
+      <Button color='gray' style={{ height: '100%' }} onClick={undo}><IconArrowBackUp size={64} /></Button>
+      <Button color='gray' style={{ height: '100%' }} onClick={redo}><IconArrowForwardUp size={64} /></Button>
 
-      <button onClick={redo}>redo</button>
-
-      <button
-        style={{ background: primaryColor }}
+      <Button
+        style={{ height: '100%', background: primaryColor }}
         onClick={() => setEraseMode(false)}
         disabled={!eraseMode}
       >
         pencil
-      </button>
+      </Button>
 
-      <button
-        style={{ background: secondaryColor }}
+      <Button
+        style={{ height: '100%', background: secondaryColor }}
         onClick={() => setEraseMode(true)}
         disabled={eraseMode}
-      >
-        eraser
-      </button>
+      />
 
-      <button onClick={() => {
+      <Button style={{ height: '100%' }} color='red' onClick={() => {
         // eslint-disable-next-line no-restricted-globals
         if (confirm('Erase everything?')) clear();
-      }}>clear</button>
-    </div>
+      }}>
+        <IconSquareX size={64} />
+      </Button>
+    </div >
   );
 }
 
