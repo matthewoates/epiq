@@ -35,14 +35,14 @@ const draw = (
   }
 }
 
-function getPos(e: TouchEvent) {
+function getPos(e: TouchEvent, scale: number) {
   const touch = e.touches[0];
   if (!touch) return;
 
   if (e.target instanceof HTMLCanvasElement) {
     const { left, top } = e.target.getBoundingClientRect();
-    const x = touch.clientX - left;
-    const y = touch.clientY - top;
+    const x = Math.round((touch.clientX - left) * scale);
+    const y = Math.round((touch.clientY - top) * scale);
 
     return { x, y };
   } else {
@@ -108,7 +108,7 @@ function DrawPad({ client, name }: DrawPadProps) {
     e.preventDefault(); // prevent the page from moving around
     console.log('prevented?', e.defaultPrevented);
 
-    const pos = getPos(e);
+    const pos = getPos(e, Constants.imgSize.width / drawSize.width);
 
     if (pos) {
       draw(canvasRef, onColor, offColor, eraseMode, pos);
@@ -137,6 +137,7 @@ function DrawPad({ client, name }: DrawPadProps) {
         ref={canvasRef}
         style={{
           border: '1px solid black',
+          imageRendering: 'pixelated',
           ...drawSize
         }}
         width={Constants.imgSize.width}

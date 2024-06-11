@@ -3,6 +3,10 @@ html {
   overscroll-behavior: contain;
 }
 
+html, body {
+  overscroll-behavior-x: none;
+}
+
 body {
   /* prevent drag down to refresh */
   overflow-y: hidden;
