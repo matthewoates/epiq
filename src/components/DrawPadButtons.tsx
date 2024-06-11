@@ -1,6 +1,8 @@
 import { Button, Flex, Text } from "@radix-ui/themes";
 import { IconArrowBackUp, IconArrowForwardUp, IconSquareX } from "@tabler/icons-react";
 
+const BG_COLOR = '#26A1B0';
+
 type DrawButtonProps = {
   name: string;
   primaryColor: string;
@@ -22,6 +24,11 @@ function DrawPadButtons({
   setEraseMode,
   clear
 }: DrawButtonProps) {
+  let primaryBorder = 'none';
+  let secondaryBorder = `20px solid ${BG_COLOR}`;
+
+  if (eraseMode) [primaryBorder, secondaryBorder] = [secondaryBorder, primaryBorder];
+
   return (
     <div style={{
       background: '#26A1B0',
@@ -36,13 +43,13 @@ function DrawPadButtons({
       <Button color='gray' style={{ height: '100%' }} onClick={redo}><IconArrowForwardUp size={64} /></Button>
 
       <Button
-        style={{ height: '100%', background: primaryColor }}
+        style={{ height: '100%', background: primaryColor, border: primaryBorder }}
         onClick={() => setEraseMode(false)}
         disabled={!eraseMode}
       />
 
       <Button
-        style={{ height: '100%', background: secondaryColor }}
+        style={{ height: '100%', background: secondaryColor, border: secondaryBorder }}
         onClick={() => setEraseMode(true)}
         disabled={eraseMode}
       />
