@@ -8,6 +8,7 @@ Small features:
   - [ ] make visibility of this preview toggleable
 - [ ] /control's "save all" button not implemented
 - [ ] /control's "clear all" button not implemented
+- [ ] prompt the user when loading `/draw` to enter a name
 
 Advanced bug:
 
