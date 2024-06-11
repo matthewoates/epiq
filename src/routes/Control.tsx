@@ -1,6 +1,7 @@
 import { Button, Card, Flex, Text } from "@radix-ui/themes";
 import { useEffect, useMemo, useState } from "react";
 import UserPanel from "../components/UserPanel";
+import WatchView from "../components/WatchView";
 import { createConnection } from "../rpc/create-client";
 
 type ControlState = {
@@ -54,6 +55,7 @@ function Control() {
               <Button color='green'>save all</Button>
               <Button color='pink'>clear all</Button>
             </Flex>
+
             <Flex align='center' gap='2'>
               <Button variant={showTV ? 'solid' : 'outline'} onClick={() => setShowTV(!showTV)}>
                 {showTV ? 'Hide TV' : 'Show TV'}
@@ -65,6 +67,11 @@ function Control() {
           </Flex>
         </Flex>
       </Card>
+
+      {showTV
+        ? <WatchView img={watchState.img ?? null}/>
+        : null
+      }
 
       <Flex gap='2'>
         {entries.map(([name, userData]) => (
