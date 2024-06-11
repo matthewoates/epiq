@@ -35,11 +35,14 @@ const draw = (
   }
 }
 
-function getPos(e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
+function getPos(e: TouchEvent) {
+  const touch = e.touches[0];
+  if (!touch) return;
+
   if (e.target instanceof HTMLCanvasElement) {
     const { left, top } = e.target.getBoundingClientRect();
-    const x = e.clientX - left;
-    const y = e.clientY - top;
+    const x = touch.clientX - left;
+    const y = touch.clientY - top;
 
     return { x, y };
   } else {
@@ -101,6 +104,33 @@ function DrawPad({ client, name }: DrawPadProps) {
     });
   }, [onColor, offColor]);
 
+  function touchEvent(e: TouchEvent) {
+    e.preventDefault(); // prevent the page from moving around
+    console.log('prevented?', e.defaultPrevented);
+
+    const pos = getPos(e);
+
+    if (pos) {
+      draw(canvasRef, onColor, offColor, eraseMode, pos);
+      sendImgData(client, canvasRef);
+    }
+  }
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const events = ['touchstart', 'touchmove', 'touchend'] as const;
+
+    events.forEach(event => {
+      canvas?.addEventListener(event, touchEvent, { passive: false });
+    });
+
+    return () => {
+      events.forEach(event => {
+        canvas?.removeEventListener(event, touchEvent);
+      });
+    };
+  })
+
   return (
     <div style={{ display: 'flex' }}>
       <canvas
@@ -111,10 +141,6 @@ function DrawPad({ client, name }: DrawPadProps) {
         }}
         width={Constants.imgSize.width}
         height={Constants.imgSize.height}
-        onMouseMove={e => {
-          draw(canvasRef, onColor, offColor, eraseMode, getPos(e));
-          sendImgData(client, canvasRef);
-        }}
       />
       <DrawPadButtons
         name={name}
