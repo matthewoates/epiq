@@ -9,8 +9,8 @@ type DrawButtonProps = {
   name: string;
   primaryColor: string;
   secondaryColor: string;
-  undo: () => void;
-  redo: () => void;
+  undo: (() => void) | null;
+  redo: (() => void) | null;
   eraseMode: boolean;
   setEraseMode: (eraseMode: boolean) => void;
   clear: () => void;
@@ -43,8 +43,8 @@ function DrawPadButtons({
     }}>
       {/* <div style={{ padding: '1em', flex: 1, display: 'flex', flexDirection: 'column', alignContent: 'stretch' }}> */}
       <Flex style={{ padding: '1em', flex: 1, gap: '1em' }} direction='column'>
-        <Button style={{ flex: 2 }} color='gray' onClick={undo}><IconArrowBackUp size={64} /></Button>
-        <Button style={{ flex: 2 }} color='gray' onClick={redo}><IconArrowForwardUp size={64} /></Button>
+        <Button disabled={!undo} style={{ flex: 2 }} color='gray' onClick={undo ?? undefined}><IconArrowBackUp size={64} /></Button>
+        <Button disabled={!redo} style={{ flex: 2 }} color='gray' onClick={redo ?? undefined}><IconArrowForwardUp size={64} /></Button>
 
         <Button style={{ flex: 1 }} color='red' onClick={() => {
           // eslint-disable-next-line no-restricted-globals

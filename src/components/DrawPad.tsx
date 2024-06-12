@@ -39,7 +39,20 @@ const draw = (
     points.forEach(({ x, y }) => ctx.lineTo(x, y));
     ctx.stroke();
   }
-}
+};
+
+const drawImg = (cr: RefObject<HTMLCanvasElement>, src: string, offColor: string) => {
+  const ctx = getContext(cr);
+
+  if (ctx) {
+    const img = new Image();
+    img.src = src;
+    img.onload = () => {
+      clear(cr, offColor);
+      ctx.drawImage(img, 0, 0, Constants.imgSize.width, Constants.imgSize.height);
+    };
+  }
+};
 
 function getPos(e: TouchEvent, scale: number) {
   const touch = e.touches[0];
@@ -97,6 +110,9 @@ function DrawPad({ client, name }: DrawPadProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const drawSize = getDrawSize(useContext(SizeContext));
   const prevPos = useRef<{ x: number, y: number }[]>([]);
+  const [undoStack, setUndoStack] = useState<string[]>([]);
+  const [redoStack, setRedoStack] = useState<string[]>([]);
+  const undoImgData = useRef<string>('');
 
   useEffect(() => {
     clear(canvasRef, offColor);
@@ -116,10 +132,18 @@ function DrawPad({ client, name }: DrawPadProps) {
 
     const pos = getPos(e, Constants.imgSize.width / drawSize.width);
 
+    if (e.type === 'touchend') {
+      if (undoImgData.current) setUndoStack([...undoStack, undoImgData.current]);
+      undoImgData.current = '';
+    }
+
     if (pos) {
       if (e.type === 'touchstart') {
         prevPos.current.length = 0;
+        undoImgData.current = getImgData(canvasRef);
+        console.log('touchstart');
       }
+
       while (prevPos.current.length > 2) prevPos.current.shift();
       const prev = prevPos.current ?? pos;
       draw(canvasRef, onColor, offColor, eraseMode, pos, prev);
@@ -141,7 +165,16 @@ function DrawPad({ client, name }: DrawPadProps) {
         canvas?.removeEventListener(event, touchEvent);
       });
     };
-  })
+  });
+
+  const undo = () => {
+    const img = undoStack.at(-1);
+    console.log({ img });
+    if (img) {
+      drawImg(canvasRef, img, offColor);
+      setUndoStack(undoStack.slice(0, undoStack.length - 1));
+    }
+  };
 
   return (
     <div style={{ display: 'flex' }}>
@@ -149,8 +182,8 @@ function DrawPad({ client, name }: DrawPadProps) {
         name={name}
         primaryColor={onColor}
         secondaryColor={offColor}
-        undo={() => { }}
-        redo={() => { }}
+        undo={undoStack.length ? undo : null}
+        redo={redoStack.length ? () => { } : null}
         eraseMode={eraseMode}
         setEraseMode={setEraseMode}
         clear={() => {
