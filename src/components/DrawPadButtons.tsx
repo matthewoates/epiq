@@ -1,6 +1,6 @@
 import { Button, Flex, Text } from "@radix-ui/themes";
 import { IconArrowBackUp, IconArrowForwardUp, IconSquareX } from "@tabler/icons-react";
-import { type ReactNode } from "react";
+import { useRef, type ReactNode } from "react";
 
 const BG_COLOR = '#26A1B0';
 
@@ -29,10 +29,29 @@ function DrawPadButtons({
   clear,
   drawSize
 }: DrawButtonProps) {
+  const epqClicks = useRef<number[]>([]);
   let primaryBorder = 'none';
   let secondaryBorder = `20px solid ${BG_COLOR}`;
 
   if (eraseMode) [primaryBorder, secondaryBorder] = [secondaryBorder, primaryBorder];
+
+  const clickEPQ = () => {
+    const arr = epqClicks.current;
+
+    arr.push(Date.now());
+
+    if (arr.length > 7) arr.shift();
+
+    if (Date.now() - arr[0] < 3_000 && arr.length === 7) {
+      const name = prompt('Choose a name:');
+
+      if (name) {
+        localStorage.setItem('name', name.trim());
+        // eslint-disable-next-line no-restricted-globals
+        location.reload();
+      }
+    }
+  };
 
   return (
     <div style={{
@@ -72,7 +91,7 @@ function DrawPadButtons({
 
         <Flex style={{ flex: 1 }} justify='between' direction='column' align='end'>
           <Text size='7' style={{ fontFamily: 'norwester' }}>{name}</Text>
-          <Text size='7' style={{ fontFamily: 'norwester' }}>EPQ</Text>
+          <Text onClick={clickEPQ} size='7' style={{ fontFamily: 'norwester' }}>EPQ</Text>
         </Flex>
       </Flex>
     </div >

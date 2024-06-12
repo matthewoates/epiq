@@ -1,11 +1,10 @@
 import { useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
 import DrawPad from "../components/DrawPad";
 import SizeProvider from "../components/SizeProvider";
 import { createConnection } from "../rpc/create-client";
 
 function Draw() {
-  const name = useSearchParams()[0].get('n') ?? 'noname';
+  const name = useMemo(() => localStorage.getItem('name') ?? 'noname', []);
   const { client, wsClient } = useMemo(() => createConnection('draw', name), [name]);
 
   // useEffect(() => {

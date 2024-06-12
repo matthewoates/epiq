@@ -143,7 +143,6 @@ function DrawPad({ client, name }: DrawPadProps) {
       if (e.type === 'touchstart') {
         prevPos.current.length = 0;
         undoImgData.current = getImgData(canvasRef);
-        console.log('touchstart');
       }
 
       while (prevPos.current.length > 2) prevPos.current.shift();
