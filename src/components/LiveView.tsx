@@ -66,13 +66,14 @@ function LiveView({
           })}
         />)}
 
-        <Button color='red' variant='outline' onClick={() => {
+        <Button className='btn-clear' color='red' variant='outline' onClick={() => {
           // forces a clear
           client.setUserState.mutate({ name, primaryColor: 'black', secondaryColor: 'black' });
           client.setUserState.mutate({ name, primaryColor, secondaryColor });
         }}>clear</Button>
 
         <Button
+          className='btn-save'
           color='gray'
           variant='outline'
           style={{ flex: 1 }}

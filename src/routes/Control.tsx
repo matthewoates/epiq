@@ -44,6 +44,14 @@ function Control() {
   const entries = Object.entries(state.users)
     .sort(([a], [b]) => a.localeCompare(b));
 
+  const clickAll = (selector: string) => {
+    // jank af, but easy!
+    const els = document.querySelectorAll(selector);
+    [...els].forEach(el => {
+      if (el instanceof HTMLElement) el.click();
+    });
+  };
+
   return (
     <div>
       <Card>
@@ -52,8 +60,8 @@ function Control() {
 
           <Flex align='center' gap='4'>
             <Flex align='center' gap='2'>
-              <Button color='green'>save all</Button>
-              <Button color='pink'>clear all</Button>
+              <Button color='green' onClick={() => clickAll('.btn-save')}>save all</Button>
+              <Button color='pink' onClick={() => clickAll('.btn-clear')}>clear all</Button>
             </Flex>
 
             <Flex align='center' gap='2'>
@@ -69,7 +77,7 @@ function Control() {
       </Card>
 
       {showTV
-        ? <WatchView img={watchState.img ?? null}/>
+        ? <WatchView img={watchState.img ?? null} />
         : null
       }
 
