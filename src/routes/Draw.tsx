@@ -12,8 +12,7 @@ function Draw() {
   // }, []);
 
   return (
-    // <div style={{ display: 'flex', width: '100%', height: '100%', overflow: 'hidden' }}>
-    <div style={{ display: 'flex', width: 915, height: 412, overflow: 'hidden' }}>
+    <div style={{ display: 'flex', width: '100%', height: '100%', overflow: 'hidden', position: 'absolute' }}>
       <SizeProvider waitForSize>
         <DrawPad client={client} name={name} />
       </SizeProvider>

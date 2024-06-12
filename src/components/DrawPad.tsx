@@ -60,8 +60,8 @@ function getPos(e: TouchEvent, scale: number) {
 
   if (e.target instanceof HTMLCanvasElement) {
     const { left, top } = e.target.getBoundingClientRect();
-    const x = Math.round((touch.clientX - left) * scale);
-    const y = Math.round((touch.clientY - top) * scale);
+    const x = Math.floor((touch.clientX - left) * scale);
+    const y = Math.floor((touch.clientY - top) * scale);
 
     return { x, y };
   } else {
@@ -205,7 +205,6 @@ function DrawPad({ client, name }: DrawPadProps) {
           clear(canvasRef, offColor);
           sendImgData(client, canvasRef);
         }}
-        drawSize={drawSize}
       >
         <canvas
           ref={canvasRef}

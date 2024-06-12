@@ -14,7 +14,6 @@ type DrawButtonProps = {
   eraseMode: boolean;
   setEraseMode: (eraseMode: boolean) => void;
   clear: () => void;
-  drawSize: { width: number; height: number };
 };
 
 function DrawPadButtons({
@@ -27,7 +26,6 @@ function DrawPadButtons({
   eraseMode,
   setEraseMode,
   clear,
-  drawSize
 }: DrawButtonProps) {
   const epqClicks = useRef<number[]>([]);
   let primaryBorder = 'none';
