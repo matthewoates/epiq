@@ -1,4 +1,10 @@
+import Draw from "./Draw";
+
+const isMobile = (/Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i).test(navigator.userAgent);
+
 function Home() {
+  if (isMobile) return <Draw />;
+
   return (
     <ul>
       <li>
