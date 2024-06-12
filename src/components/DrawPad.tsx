@@ -123,6 +123,8 @@ function DrawPad({ client, name }: DrawPadProps) {
         const { primaryColor, secondaryColor } = data;
         if (primaryColor) setOnColor(primaryColor);
         if (secondaryColor) setOffColor(secondaryColor);
+        setUndoStack([]);
+        setRedoStack([]);
       }
     });
   }, [onColor, offColor]);
@@ -149,6 +151,7 @@ function DrawPad({ client, name }: DrawPadProps) {
       draw(canvasRef, onColor, offColor, eraseMode, pos, prev);
       prevPos.current.push(pos);
       sendImgData(client, canvasRef);
+      if (redoStack.length) setRedoStack([]);
     }
   }
 
@@ -168,11 +171,24 @@ function DrawPad({ client, name }: DrawPadProps) {
   });
 
   const undo = () => {
+    const oldImg = getImgData(canvasRef);
     const img = undoStack.at(-1);
-    console.log({ img });
+
     if (img) {
       drawImg(canvasRef, img, offColor);
       setUndoStack(undoStack.slice(0, undoStack.length - 1));
+      setRedoStack([...redoStack, oldImg]);
+    }
+  };
+
+  const redo = () => {
+    const oldImg = getImgData(canvasRef);
+    const img = redoStack.at(-1);
+
+    if (img) {
+      drawImg(canvasRef, img, offColor);
+      setRedoStack(redoStack.slice(0, redoStack.length - 1));
+      setUndoStack([...undoStack, oldImg]);
     }
   };
 
@@ -183,7 +199,7 @@ function DrawPad({ client, name }: DrawPadProps) {
         primaryColor={onColor}
         secondaryColor={offColor}
         undo={undoStack.length ? undo : null}
-        redo={redoStack.length ? () => { } : null}
+        redo={redoStack.length ? redo : null}
         eraseMode={eraseMode}
         setEraseMode={setEraseMode}
         clear={() => {
