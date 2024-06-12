@@ -1,9 +1,11 @@
 import { Button, Flex, Text } from "@radix-ui/themes";
 import { IconArrowBackUp, IconArrowForwardUp, IconSquareX } from "@tabler/icons-react";
+import { type ReactNode } from "react";
 
 const BG_COLOR = '#26A1B0';
 
 type DrawButtonProps = {
+  children: ReactNode;
   name: string;
   primaryColor: string;
   secondaryColor: string;
@@ -12,9 +14,11 @@ type DrawButtonProps = {
   eraseMode: boolean;
   setEraseMode: (eraseMode: boolean) => void;
   clear: () => void;
+  drawSize: { width: number; height: number };
 };
 
 function DrawPadButtons({
+  children,
   name,
   primaryColor,
   secondaryColor,
@@ -22,7 +26,8 @@ function DrawPadButtons({
   redo,
   eraseMode,
   setEraseMode,
-  clear
+  clear,
+  drawSize
 }: DrawButtonProps) {
   let primaryBorder = 'none';
   let secondaryBorder = `20px solid ${BG_COLOR}`;
@@ -32,38 +37,43 @@ function DrawPadButtons({
   return (
     <div style={{
       background: '#26A1B0',
-      gap: '0.5em',
-      padding: '0.5em',
       flex: 1,
-      display: 'grid',
-      gridTemplateRows: '1fr 3fr 1fr',
-      gridTemplateColumns: '1fr 1fr'
+      width: '100%',
+      display: 'flex',
     }}>
-      <Button color='gray' style={{ height: '100%' }} onClick={undo}><IconArrowBackUp size={64} /></Button>
-      <Button color='gray' style={{ height: '100%' }} onClick={redo}><IconArrowForwardUp size={64} /></Button>
+      {/* <div style={{ padding: '1em', flex: 1, display: 'flex', flexDirection: 'column', alignContent: 'stretch' }}> */}
+      <Flex style={{ padding: '1em', flex: 1, gap: '1em' }} direction='column'>
+        <Button style={{ flex: 2 }} color='gray' onClick={undo}><IconArrowBackUp size={64} /></Button>
+        <Button style={{ flex: 2 }} color='gray' onClick={redo}><IconArrowForwardUp size={64} /></Button>
 
-      <Button
-        style={{ height: '100%', background: primaryColor, border: primaryBorder }}
-        onClick={() => setEraseMode(false)}
-        disabled={!eraseMode}
-      />
+        <Button style={{ flex: 1 }} color='red' onClick={() => {
+          // eslint-disable-next-line no-restricted-globals
+          if (confirm('Erase everything?')) clear();
+        }}>
+          <IconSquareX size={64} />
+        </Button>
+      </Flex>
 
-      <Button
-        style={{ height: '100%', background: secondaryColor, border: secondaryBorder }}
-        onClick={() => setEraseMode(true)}
-        disabled={eraseMode}
-      />
+      {children}
 
-      <Button style={{ height: '100%' }} color='red' onClick={() => {
-        // eslint-disable-next-line no-restricted-globals
-        if (confirm('Erase everything?')) clear();
-      }}>
-        <IconSquareX size={64} />
-      </Button>
+      <Flex style={{ padding: '1em', flex: 1, gap: '1em' }} direction='column'>
+        {/* <div style={{ padding: '1em', flex: 1, display: 'flex', flexDirection: 'column' }}> */}
+        <Button
+          style={{ flex: 2, background: primaryColor, border: primaryBorder }}
+          onClick={() => setEraseMode(false)}
+          disabled={!eraseMode}
+        />
 
-      <Flex justify='between' direction='column' align='end'>
-        <Text size='7' style={{ fontFamily: 'norwester' }}>{name}</Text>
-        <Text size='7' style={{ fontFamily: 'norwester' }}>EPQ ©2024</Text>
+        <Button
+          style={{ flex: 2, background: secondaryColor, border: secondaryBorder }}
+          onClick={() => setEraseMode(true)}
+          disabled={eraseMode}
+        />
+
+        <Flex style={{ flex: 1 }} justify='between' direction='column' align='end'>
+          <Text size='7' style={{ fontFamily: 'norwester' }}>{name}</Text>
+          <Text size='7' style={{ fontFamily: 'norwester' }}>EPQ</Text>
+        </Flex>
       </Flex>
     </div >
   );

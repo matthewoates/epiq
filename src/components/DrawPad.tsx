@@ -29,7 +29,7 @@ const draw = (
 
   if (ctx) {
     let strokeWidth = Constants.strokeWidth;
-    if (eraseMode) strokeWidth *= 3;
+    if (eraseMode) strokeWidth *= 6;
     ctx.strokeStyle = eraseMode ? offColor : onColor;
     ctx.lineWidth = strokeWidth;
 
@@ -145,16 +145,6 @@ function DrawPad({ client, name }: DrawPadProps) {
 
   return (
     <div style={{ display: 'flex' }}>
-      <canvas
-        ref={canvasRef}
-        style={{
-          border: '1px solid black',
-          imageRendering: 'pixelated',
-          ...drawSize
-        }}
-        width={Constants.imgSize.width}
-        height={Constants.imgSize.height}
-      />
       <DrawPadButtons
         name={name}
         primaryColor={onColor}
@@ -167,7 +157,19 @@ function DrawPad({ client, name }: DrawPadProps) {
           clear(canvasRef, offColor);
           sendImgData(client, canvasRef);
         }}
-      />
+        drawSize={drawSize}
+      >
+        <canvas
+          ref={canvasRef}
+          style={{
+            border: '1px solid black',
+            imageRendering: 'pixelated',
+            ...drawSize
+          }}
+          width={Constants.imgSize.width}
+          height={Constants.imgSize.height}
+        />
+      </DrawPadButtons>
     </div>
   );
 }
