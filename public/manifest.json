@@ -1,5 +1,6 @@
 {
-  "short_name": "React App",
+  "id": "eipq",
+  "short_name": "EPiQ",
   "name": "Create React App Sample",
   "icons": [
     {
@@ -19,7 +20,7 @@
     }
   ],
   "start_url": ".",
-  "display": "standalone",
+  "display": "fullscreen",
   "theme_color": "#000000",
   "background_color": "#ffffff"
 }
