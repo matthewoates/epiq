@@ -1,4 +1,4 @@
-import { Button, Flex, Text } from "@radix-ui/themes";
+import { Button, Flex } from "@radix-ui/themes";
 import type { RPCClient } from "../rpc/create-client";
 import Snapshot from "./Snapshot";
 
@@ -37,7 +37,6 @@ function LiveView({
           }
         }}
         img={img}
-        overlay={<Text>{name}</Text>}
       />
       <Flex direction='column' style={{ width: 48 }} gap='1'>
         {showAdmin && (
