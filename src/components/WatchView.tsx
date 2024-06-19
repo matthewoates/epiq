@@ -1,17 +1,38 @@
-import Constants from "../Constants";
-import Snapshot from "./Snapshot";
+import { type CSSProperties } from "react";
 
 type WatchViewProps = {
   img: string | null;
+  style?: CSSProperties;
 };
 
-function WatchView({ img }: WatchViewProps) {
+const IMG_STYLE: CSSProperties = {
+  objectFit: 'contain',
+  width: '100vw',
+  height: '100vh',
+  background: '#ddd'
+};
+
+function WatchView({ img, style }: WatchViewProps) {
   return (
     <div>
       {img
-        ? <Snapshot img={img} selected={false} style={{ width: Constants.imgSize.width * 2, height: Constants.imgSize.height * 2 }}/>
-        : null
+        ? <img src={img} style={{ ...IMG_STYLE, ...style }} alt='' />
+        : <div style={{ ...IMG_STYLE, ...style }} />
       }
+      {/* {img
+        ? (
+          <Snapshot
+            img={img}
+            selected={false}
+            style={{
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              width: '100vw',
+              height: '100vh',
+            }}
+          />
+        ) : null
+      } */}
     </div>
   );
 }

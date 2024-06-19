@@ -1,5 +1,6 @@
 import { Button, Card, Flex, Text } from "@radix-ui/themes";
 import { useEffect, useMemo, useState } from "react";
+import Constants from "../Constants";
 import UserPanel from "../components/UserPanel";
 import WatchView from "../components/WatchView";
 import { createConnection } from "../rpc/create-client";
@@ -42,7 +43,10 @@ function Control() {
   }, []);
 
   const entries = Object.entries(state.users)
-    .sort(([a], [b]) => a.localeCompare(b));
+    .sort(([a], [b]) => a.localeCompare(b))
+    .sort(([a], [b]) => {
+      return Constants.order.indexOf(a) - Constants.order.indexOf(b);
+    });
 
   const clickAll = (selector: string) => {
     // jank af, but easy!
@@ -77,7 +81,7 @@ function Control() {
       </Card>
 
       {showTV
-        ? <WatchView img={watchState.img ?? null} />
+        ? <WatchView img={watchState.img ?? null} style={{ width: 640, height: 480 }} />
         : null
       }
 

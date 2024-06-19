@@ -87,7 +87,7 @@ function DrawPadButtons({
           disabled={eraseMode}
         />
 
-        <Flex style={{ flex: 1 }} justify='between' direction='column' align='end'>
+        <Flex style={{ flex: 1, userSelect: 'none' }} justify='between' direction='column' align='end'>
           <Text size='7' style={{ fontFamily: 'norwester' }}>{name}</Text>
           <Text onClick={clickEPQ} size='7' style={{ fontFamily: 'norwester' }}>EPQ</Text>
         </Flex>

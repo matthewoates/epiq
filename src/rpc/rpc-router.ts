@@ -3,6 +3,7 @@ import type { CreateWSSContextFnOptions } from '@trpc/server/adapters/ws';
 import { observable } from '@trpc/server/observable';
 import EventEmitter from 'events';
 import { z } from 'zod';
+import Constants from '../Constants';
 import logger from '../logger';
 import type { Role } from '../server';
 
@@ -43,8 +44,8 @@ const ee = new EventEmitter();
 
 function getUserData(name: string) {
   const result: UserData = {
-    primaryColor: '#00ff00',
-    secondaryColor: '#000000',
+    primaryColor: Constants.onColor,
+    secondaryColor: Constants.offColor,
     img: '',
     ...userData.get(name)
   }
